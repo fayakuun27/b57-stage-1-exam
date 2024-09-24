@@ -5,7 +5,6 @@ function sortArray(arr) {
     for (let j = i + 1; j < arr.length; j++) {
       if (arr[j] === sentence[i]) {
         [arr[i], arr[j]] = [arr[j], arr[i]]; //swap
-        break;
       }
     }
   }
