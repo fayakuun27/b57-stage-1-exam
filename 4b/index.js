@@ -39,6 +39,39 @@ app.post("/add-collection", addCollection);
 app.get("/collection-detail/:id", collectionDetail);
 app.post("/add-task/:id", addTask);
 app.get("/delete-collection/:id", deleteCollection);
+app.post("/save/:id", saveCollection);
+
+async function saveCollection(req, res) {
+  const user = req.session.user;
+
+  if (!user) {
+    return res.redirect("/login");
+  }
+
+  const { check } = req.body;
+  const { id } = req.params;
+
+  console.log("check", check);
+
+  const query = `SELECT public.task_tb.*,public.collections_tb."collectionName", public.collections_tb.user_id ,public.users_tb.username  FROM public.collections_tb  
+	LEFT JOIN public.users_tb on public.collections_tb.user_id = public.users_tb.id
+	LEFT JOIN public.task_tb on public.task_tb.collections_id = public.collections_tb.id
+		WHERE public.collections_tb.id = ${id}`;
+  const result = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  console.log("result", result);
+
+  for (let i = 0; i < result.length; i++) {
+    if (check.includes(result[i].id.toString())) {
+      const queryUpdate = `UPDATE public.task_tb SET is_done=true WHERE public.task_tb.id = ${result[i].id}`;
+      await sequelize.query(queryUpdate, { type: QueryTypes.UPDATE });
+    } else {
+      const queryUpdate = `UPDATE public.task_tb SET is_done=false WHERE public.task_tb.id = ${result[i].id}`;
+      await sequelize.query(queryUpdate, { type: QueryTypes.UPDATE });
+    }
+  }
+  res.redirect(`/collection-detail/${id}`);
+}
 
 async function deleteCollection(req, res) {
   const user = req.session.user;
@@ -49,7 +82,7 @@ async function deleteCollection(req, res) {
 
   const { id } = req.params;
 
-  const query = `DELETE FROM public.collections_tb WHERE id = ${id}`;
+  const query = `DELETE FROM public.collections_tb WHERE public.collections_tb.id = ${id}`;
   await sequelize.query(query, { type: QueryTypes.DELETE });
 
   res.redirect("/");
@@ -76,7 +109,7 @@ async function collectionDetail(req, res) {
   const user = req.session.user;
 
   const { id } = req.params;
-  const query = `SELECT public.task_tb.*,public.collections_tb.*,public.users_tb.username  FROM public.collections_tb  
+  const query = `SELECT public.task_tb.*,public.collections_tb."collectionName", public.collections_tb.user_id ,public.users_tb.username  FROM public.collections_tb  
 	LEFT JOIN public.users_tb on public.collections_tb.user_id = public.users_tb.id
 	LEFT JOIN public.task_tb on public.task_tb.collections_id = public.collections_tb.id
 		WHERE public.collections_tb.id = ${id}`;

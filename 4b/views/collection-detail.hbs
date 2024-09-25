@@ -93,45 +93,51 @@
             </div>
           </form>
         {{/if}}
-
-        <h2>Task</h2>
-
-        <div class="d-grid gap-2 container">
+        <form action="/save/{{collectionId}}" method="POST">
+          <h2>Task</h2>
           {{#each data}}
             {{#unless is_done}}
-              <form action="/checked/{{id}}" method="post">
-                <label
-                  for="{{taskName}}"
-                  class="form-check-label"
-                >{{taskName}}</label>
-                {{#if owner}}
-                  <input
-                    type="checkbox"
-                    name="check"
-                    id="{{taskName}}"
-                    class="form-check-input"
-                  />
-                {{/if}}
-              </form>
+              <label
+                for="{{taskName}}"
+                class="form-check-label"
+              >{{taskName}}</label>
+              {{#if owner}}
+                <input
+                  type="checkbox"
+                  name="check"
+                  id="{{taskName}}"
+                  class="form-check-input"
+                  value={{id}}
+                />
+              {{/if}}
             {{/unless}}
           {{/each}}
-        </div>
-        <h2>Completed</h2>
-        {{#each data}}
-          {{#if is_done}}
-            <label for="{{taskName}}" class="form-check-label"><del
-              >{{taskName}}</del></label>
-            {{#if owner}}
-              <input
-                type="checkbox"
-                name="check"
-                id="{{taskName}}"
-                class="form-check-input"
-                checked
-              />
+
+          <h2>Completed</h2>
+          {{#each data}}
+            {{#if is_done}}
+              <label for="{{taskName}}" class="form-check-label"><del
+                >{{taskName}}</del></label>
+              {{#if owner}}
+                <input
+                  type="checkbox"
+                  name="check"
+                  id="{{taskName}}"
+                  class="form-check-input"
+                  value={{id}}
+                  checked
+                />
+              {{/if}}
             {{/if}}
+          {{/each}}
+          {{#if owner}}
+            <div class="mb-3 d-flex flex-row-reverse">
+              <button class="btn btn-dark align-items-end" type="submit">
+                submit
+              </button>
+            </div>
           {{/if}}
-        {{/each}}
+        </form>
       </div>
     </main>
   </body>
