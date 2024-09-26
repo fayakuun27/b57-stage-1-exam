@@ -95,39 +95,44 @@
         {{/if}}
         <form action="/save/{{collectionId}}" method="POST">
           <h2>Task</h2>
-          {{#each data}}
-            {{#unless is_done}}
-              <label
-                for="{{taskName}}"
-                class="form-check-label"
-              >{{taskName}}</label>
-              {{#if owner}}
-                <input
-                  type="checkbox"
-                  name="check"
-                  id="{{taskName}}"
-                  class="form-check-input"
-                  value={{id}}
-                />
-              {{/if}}
-            {{/unless}}
-          {{/each}}
-
+          {{#if data}}
+            {{#each data}}
+              {{#unless is_done}}
+                <div class="mb-3">
+                  <label
+                    for="{{taskName}}"
+                    class="form-check-label"
+                  >{{taskName}}</label>
+                  {{#if owner}}
+                    <input
+                      type="checkbox"
+                      name="check"
+                      id="{{taskName}}"
+                      class="form-check-input"
+                      value={{id}}
+                    />
+                  {{/if}}
+                </div>
+              {{/unless}}
+            {{/each}}
+          {{/if}}
           <h2>Completed</h2>
           {{#each data}}
             {{#if is_done}}
-              <label for="{{taskName}}" class="form-check-label"><del
-                >{{taskName}}</del></label>
-              {{#if owner}}
-                <input
-                  type="checkbox"
-                  name="check"
-                  id="{{taskName}}"
-                  class="form-check-input"
-                  value={{id}}
-                  checked
-                />
-              {{/if}}
+              <div class="mb-3">
+                <label for="{{taskName}}" class="form-check-label"><del
+                  >{{taskName}}</del></label>
+                {{#if owner}}
+                  <input
+                    type="checkbox"
+                    name="check"
+                    id="{{taskName}}"
+                    class="form-check-input"
+                    value={{id}}
+                    checked
+                  />
+                {{/if}}
+              </div>
             {{/if}}
           {{/each}}
           {{#if owner}}
